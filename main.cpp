@@ -1,44 +1,42 @@
 #include <SFML/Graphics.hpp>
+#include "MAP.h"
+using namespace sf;
 
 int main()
 {
-    // Create a 800x600 window with title
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML Test");
-
-    // Create a red circle shape
-    sf::CircleShape circle(50.0f);
-    circle.setFillColor(sf::Color::Red);
+    RenderWindow window(VideoMode(800, 600), "SFML Test");
+    CircleShape circle(50.0f);
+    circle.setFillColor(Color::Red);
     circle.setPosition(100.f, 100.f);
-
-    // Movement speed
     float speed = 100.f;
+    Clock clock;
 
-    // Clock to measure time per frame
-    sf::Clock clock;
-
-    // Main loop
     while (window.isOpen())
     {
-        sf::Event event;
+        Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            if (event.type == Event::Closed) window.close();
         }
 
-        // Move the circle over time
         float deltaTime = clock.restart().asSeconds();
         circle.move(speed * deltaTime, 0.f);
 
-        // Wrap around the screen
-        if (circle.getPosition().x > window.getSize().x)
-            circle.setPosition(-circle.getRadius() * 2, circle.getPosition().y);
+        if (circle.getPosition().x > window.getSize().x) circle.setPosition(circle.getRadius() * 2, circle.getPosition().y);
 
-        // Draw everything
-        window.clear(sf::Color::Black);
+        window.clear(Color::Black);
         window.draw(circle);
         window.display();
     }
+
+   /* Map<int, int> mp;
+
+    mp.insert(1, 5);
+    mp.insert(2, 6);
+    mp.insert(3, 7);
+    mp.insert(4, 8);
+
+    mp.printInOrder();*/
 
     return 0;
 }
