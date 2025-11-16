@@ -1,0 +1,56 @@
+Common Git Commands and Examples
+
+1. git init
+   Initializes a new Git repository in your current directory.
+   Example:
+       git init
+
+2. git clone <repository_url>
+   Copies an existing remote repository to your local system.
+   Example:
+       git clone https://github.com/user/repo.git
+
+3. git status
+   Shows the current status of your working directory and staging area.
+   Example:
+       git status
+
+4. git add <file_name>
+   Stages specific files for the next commit.
+   Example:
+       git add main.cpp
+   Add everything:
+       git add .
+
+5. git commit -m "message"
+   Saves staged changes to the local repository with a descriptive commit message.
+   Example:
+       git commit -m "Implemented feature X"
+
+6. git pull
+   Fetches changes from remote repository and merges them into current branch.
+   Example:
+       git pull origin main
+
+7. git push
+   Uploads local commits to a remote repository.
+   Example:
+       git push origin main
+
+8. git branch
+   Lists, creates, or deletes branches.
+   Example (list):
+       git branch
+   Example (create):
+       git branch new-feature
+
+9. git checkout <branch_name>
+   Switches to another branch.
+   Example:
+       git checkout main
+
+10. git merge <branch_name>
+    Merges a branch into the current branch.
+    Example:
+        git merge new-feature
+
