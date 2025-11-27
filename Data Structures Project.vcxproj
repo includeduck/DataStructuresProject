@@ -133,7 +133,26 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryTree.h" />
+    <ClInclude Include="containers.h" />
+    <ClInclude Include="core_ds.h" />
+    <ClInclude Include="DateTime.h" />
+    <ClInclude Include="DynamicArray.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="GraphAlgorithms.h" />
+    <ClInclude Include="HashMap.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="MAP.h" />
+    <ClInclude Include="MathUtils.h" />
+    <ClInclude Include="MinHeap.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="Port.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="RouteState.h" />
+    <ClInclude Include="Stack.h" />
+    <ClInclude Include="String.h" />
+    <ClInclude Include="StringTokenizer.h" />
+    <ClInclude Include="Voyage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

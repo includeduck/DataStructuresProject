@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include "MAP.h"
+#include "containers.h"
 using namespace sf;
 
 int main()
 {
-    RenderWindow window(VideoMode(800, 600), "SFML Test");
+    /*RenderWindow window(VideoMode(800, 600), "SFML Test");
     CircleShape circle(50.0f);
     circle.setFillColor(Color::Red);
     circle.setPosition(100.f, 100.f);
@@ -27,6 +28,14 @@ int main()
         window.clear(Color::Black);
         window.draw(circle);
         window.display();
+    }*/
+
+    DynamicArray<int> da;
+    da.pushBack(34);
+    da.pushBack(23);
+    for (int i = 0; i < da.size(); i++)
+    {
+        std::cout << da[i] << " ";
     }
 
    /* Map<int, int> mp;
