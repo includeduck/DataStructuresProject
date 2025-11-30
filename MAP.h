@@ -1,13 +1,15 @@
-#pragma once
-#include <iostream>
-#include <algorithm>
+#ifndef MAP_H
+#define MAP_H
 
-template <typename Key, typename Value>
-class Map
-{
+#include "Vector.h"
+#include <utility>
+#include <stdexcept>
+#include <functional>
+
+template<typename Key, typename Value>
+class Map {
 private:
-    struct Node
-    {
+    struct Node {
         Key key;
         Value value;
         Node* left;
@@ -18,203 +20,209 @@ private:
     };
 
     Node* root;
+    size_t mapSize;
 
-    int height(Node* node)
-    {
+    int height(Node* node) const {
         return node ? node->height : 0;
     }
 
-    void updateHeight(Node* node)
-    {
-        node->height = 1 + std::max(height(node->left), height(node->right));
-    }
-
-    int balanceFactor(Node* node)
-    {
+    int balanceFactor(Node* node) const {
         return node ? height(node->left) - height(node->right) : 0;
     }
 
-    Node* rotateRight(Node* y)
-    {
+    Node* rotateRight(Node* y) {
         Node* x = y->left;
         Node* T2 = x->right;
 
         x->right = y;
         y->left = T2;
 
-        updateHeight(y);
-        updateHeight(x);
+        y->height = std::max(height(y->left), height(y->right)) + 1;
+        x->height = std::max(height(x->left), height(x->right)) + 1;
 
         return x;
     }
 
-    Node* rotateLeft(Node* x)
-    {
+    Node* rotateLeft(Node* x) {
         Node* y = x->right;
         Node* T2 = y->left;
 
         y->left = x;
         x->right = T2;
 
-        updateHeight(x);
-        updateHeight(y);
+        x->height = std::max(height(x->left), height(x->right)) + 1;
+        y->height = std::max(height(y->left), height(y->right)) + 1;
 
         return y;
     }
 
-    Node* balance(Node* node)
-    {
-        int bf = balanceFactor(node);
-
-        if (bf > 1)
-        {
-            if (balanceFactor(node->left) < 0) node->left = rotateLeft(node->left);
-            return rotateRight(node);
+    Node* insert(Node* node, const Key& key, const Value& value) {
+        if (!node) {
+            ++mapSize;
+            return new Node(key, value);
         }
-        if (bf < -1)
-        {
-            if (balanceFactor(node->right) > 0) node->right = rotateRight(node->right);
-            return rotateLeft(node);
+
+        if (key < node->key) {
+            node->left = insert(node->left, key, value);
         }
-        return node;
-    }
-
-    Node* insert(Node* node, const Key& key, const Value& value)
-    {
-        if (!node) return new Node(key, value);
-
-        if (key < node->key) node->left = insert(node->left, key, value);
-        else if (key > node->key) node->right = insert(node->right, key, value);
-        else
-        {
-            node->value = value;
+        else if (key > node->key) {
+            node->right = insert(node->right, key, value);
+        }
+        else {
+            node->value = value; // Update existing key
             return node;
         }
 
-        updateHeight(node);
-        return balance(node);
-    }
+        node->height = 1 + std::max(height(node->left), height(node->right));
 
-    Node* minValueNode(Node* node)
-    {
-        while (node->left) node = node->left;
+        int balance = balanceFactor(node);
+
+        // Left Left Case
+        if (balance > 1 && key < node->left->key) {
+            return rotateRight(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && key > node->right->key) {
+            return rotateLeft(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node->left->key) {
+            node->left = rotateLeft(node->left);
+            return rotateRight(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node->right->key) {
+            node->right = rotateRight(node->right);
+            return rotateLeft(node);
+        }
+
         return node;
     }
 
-    Node* erase(Node* node, const Key& key)
-    {
-        if (!node) return nullptr;
+    Node* find(Node* node, const Key& key) const {
+        if (!node || node->key == key) return node;
 
-        if (key < node->key) node->left = erase(node->left, key);
-        else if (key > node->key) node->right = erase(node->right, key);
-        else
-        {
-            if (!node->left || !node->right)
-            {
-                Node* temp = node->left ? node->left : node->right;
-                delete node;
-                return temp;
-            }
-            else
-            {
-                Node* temp = minValueNode(node->right);
-                node->key = temp->key;
-                node->value = temp->value;
-                node->right = erase(node->right, temp->key);
-            }
-        }
-
-        updateHeight(node);
-        return balance(node);
+        if (key < node->key) return find(node->left, key);
+        return find(node->right, key);
     }
 
-    Node* find(Node* node, const Key& key) const
-    {
-        while (node)
-        {
-            if (key < node->key) node = node->left;
-            else if (key > node->key) node = node->right;
-            else return node;
+    void inOrderTraversal(Node* node, Vector<Key>& keys) const {
+        if (node) {
+            inOrderTraversal(node->left, keys);
+            keys.push_back(node->key);
+            inOrderTraversal(node->right, keys);
         }
-        return nullptr;
     }
 
-    void destroy(Node* node)
-    {
-        if (node)
-        {
-            destroy(node->left);
-            destroy(node->right);
+    void inOrderTraversalPairs(Node* node, Vector<std::pair<Key, Value>>& pairs) const {
+        if (node) {
+            inOrderTraversalPairs(node->left, pairs);
+            pairs.push_back(std::make_pair(node->key, node->value));
+            inOrderTraversalPairs(node->right, pairs);
+        }
+    }
+
+    void clear(Node* node) {
+        if (node) {
+            clear(node->left);
+            clear(node->right);
             delete node;
         }
     }
 
-    Node* copy(Node* other)
-    {
+    Node* copyTree(Node* other) {
         if (!other) return nullptr;
-        Node* node = new Node(other->key, other->value);
-        node->left = copy(other->left);
-        node->right = copy(other->right);
-        node->height = other->height;
-        return node;
+
+        Node* newNode = new Node(other->key, other->value);
+        newNode->left = copyTree(other->left);
+        newNode->right = copyTree(other->right);
+        newNode->height = other->height;
+        return newNode;
     }
 
 public:
-    Map() : root(nullptr) {}
+    Map() : root(nullptr), mapSize(0) {}
 
-    Map(const Map& other) : root(copy(other.root)) {}
+    Map(const Map& other) : root(copyTree(other.root)), mapSize(other.mapSize) {}
 
-    Map& operator=(const Map& other)
-    {
-        if (this != &other)
-        {
-            destroy(root);
-            root = copy(other.root);
+    Map& operator=(const Map& other) {
+        if (this != &other) {
+            clear(root);
+            root = copyTree(other.root);
+            mapSize = other.mapSize;
         }
         return *this;
     }
 
-    ~Map()
-    {
-        destroy(root);
+    ~Map() {
+        clear(root);
     }
 
-    void insert(const Key& key, const Value& value)
-    {
+    void insert(const Key& key, const Value& value) {
         root = insert(root, key, value);
     }
 
-    bool erase(const Key& key)
-    {
-        if (!find(key)) return false;
-        root = erase(root, key);
-        return true;
+    bool contains(const Key& key) const {
+        return find(root, key) != nullptr;
     }
 
-    Value* find(const Key& key)
-    {
+    // Non-const operator[] for assignment
+    Value& operator[](const Key& key) {
         Node* node = find(root, key);
-        return node ? &node->value : nullptr;
-    }
-
-    const Value* find(const Key& key) const
-    {
-        Node* node = find(root, key);
-        return node ? &node->value : nullptr;
-    }
-
-    void inOrder(Node* node) const
-    {
-        if (node)
-        {
-            inOrder(node->left);
-            std::cout << node->key << ": " << node->value << std::endl;
-            inOrder(node->right);
+        if (!node) {
+            insert(key, Value());
+            node = find(root, key);
         }
+        return node->value;
     }
 
-    void printInOrder() const
-    {
-        inOrder(root);
+    // Const operator[] for read-only access
+    const Value& operator[](const Key& key) const {
+        Node* node = find(root, key);
+        if (!node) throw std::out_of_range("Key not found");
+        return node->value;
+    }
+
+    Value& at(const Key& key) {
+        Node* node = find(root, key);
+        if (!node) throw std::out_of_range("Key not found");
+        return node->value;
+    }
+
+    const Value& at(const Key& key) const {
+        Node* node = find(root, key);
+        if (!node) throw std::out_of_range("Key not found");
+        return node->value;
+    }
+
+    Vector<Key> keys() const {
+        Vector<Key> result;
+        inOrderTraversal(root, result);
+        return result;
+    }
+
+    Vector<std::pair<Key, Value>> items() const {
+        Vector<std::pair<Key, Value>> result;
+        inOrderTraversalPairs(root, result);
+        return result;
+    }
+
+    size_t size() const {
+        return mapSize;
+    }
+
+    bool empty() const {
+        return mapSize == 0;
+    }
+
+    void clear() {
+        clear(root);
+        root = nullptr;
+        mapSize = 0;
     }
 };
+
+#endif
