@@ -1,3 +1,34 @@
-﻿  main.cpp
-C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\main.cpp(36,23): warning C4018: '<': signed/unsigned mismatch
+﻿  testCases.cpp
+C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\PriorityQueue.h(28,18): warning C4018: '<': signed/unsigned mismatch
+  (compiling source file 'testCases.cpp')
+      C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\PriorityQueue.h(28,18):
+      the template instantiation context (the oldest one first) is
+          C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\MaritimeSystem.h(340,47):
+          see reference to class template instantiation 'PriorityQueue<PathFinding::AStarNode,std::less<T>>' being compiled
+          with
+          [
+              T=PathFinding::AStarNode
+          ]
+          C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\PriorityQueue.h(23,10):
+          while compiling class template member function 'void PriorityQueue<PathFinding::AStarNode,std::less<T>>::heapifyDown(int)'
+          with
+          [
+              T=PathFinding::AStarNode
+          ]
+              C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\PriorityQueue.h(58,24):
+              see the first reference to 'PriorityQueue<PathFinding::AStarNode,std::less<T>>::heapifyDown' in 'PriorityQueue<PathFinding::AStarNode,std::less<T>>::pop'
+          with
+          [
+              T=PathFinding::AStarNode
+          ]
+              C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\MaritimeSystem.h(353,19):
+              see the first reference to 'PriorityQueue<PathFinding::AStarNode,std::less<T>>::pop' in 'MaritimeSystem::findPathAStar'
+          with
+          [
+              T=PathFinding::AStarNode
+          ]
+  
+C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\PriorityQueue.h(32,19): warning C4018: '<': signed/unsigned mismatch
+  (compiling source file 'testCases.cpp')
+  
   Data Structures Project.vcxproj -> C:\Users\Dell\OneDrive\Desktop\DataStructuresProject\Debug\Data Structures Project.exe
